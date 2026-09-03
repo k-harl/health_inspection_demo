@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>AfrePAY · Spaza Compliance Readiness</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;450;500;600&display=swap');
+
+:root{
+  --green:#00643c; --green-700:#004f30; --green-050:#e8f2ec;
+  --gold:#C8A415; --gold-050:#f8f0d4;
+  --red:#c81400; --red-050:#fbe9e6;
+  --dark:#1a1a1a; --ink-60:#5c5c5c; --ink-40:#8a8a8a;
+  --line:#e7e7e4; --paper:#ffffff; --bg:#f3f4f1;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+.ap-root{
+  font-family:'Inter',system-ui,sans-serif;
+  color:var(--dark); background:var(--bg);
+  min-height:100vh; display:flex; align-items:center; justify-content:center;
+  padding:24px 16px; -webkit-font-smoothing:antialiased;
+}
+.ap-display{font-family:'Space Grotesk',sans-serif}
+.ap-phone{
+  width:100%; max-width:412px; background:var(--paper);
+  border-radius:34px; overflow:hidden; position:relative;
+  box-shadow:0 24px 60px -20px rgba(26,26,26,.28), 0 0 0 1px var(--line);
+  display:flex; flex-direction:column; min-height:760px;
+}
+@media (max-width:440px){ .ap-root{padding:0} .ap-phone{border-radius:0; min-height:100vh; box-shadow:none} }
+.ap-statusbar{display:flex; align-items:center; justify-content:space-between; padding:10px 20px 4px; font-size:12px; font-weight:600;}
+.ap-scroll{flex:1; overflow-y:auto; display:flex; flex-direction:column}
+.ap-brandbar{background:linear-gradient(135deg,var(--green) 0%,var(--green-700) 100%); color:#fff; padding:14px 20px; display:flex; align-items:center; gap:9px;}
+.ap-logo{width:26px;height:26px;border-radius:7px;background:var(--gold);display:flex;align-items:center;justify-content:center;color:var(--green-700);font-family:'Space Grotesk';font-weight:700;font-size:15px;}
+.ap-wordmark{font-family:'Space Grotesk';font-weight:600;font-size:15px;letter-spacing:.2px}
+.ap-wordmark span{color:var(--gold)}
+.ap-pad{padding:22px 20px}
+.ap-h1{font-family:'Space Grotesk';font-weight:600;font-size:25px;line-height:1.15;letter-spacing:-.3px;margin:0 0 8px}
+.ap-sub{font-size:14px;line-height:1.5;color:var(--ink-60);margin:0}
+.ap-eyebrow{font-size:11px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--green);margin:0 0 10px}
+.ap-note{display:flex;gap:10px;background:var(--gold-050);border:1px solid #ecdca0;border-left:3px solid var(--gold);border-radius:12px;padding:12px 13px;margin:18px 0;}
+.ap-note svg{color:#a4830f;flex-shrink:0;margin-top:1px}
+.ap-note p{margin:0;font-size:12.5px;line-height:1.45;color:#6b5608}
+.ap-note b{color:#4d3f04}
+.ap-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px}
+.ap-field{margin-bottom:13px}
+.ap-field:last-child{margin-bottom:0}
+.ap-label{display:block;font-size:12.5px;font-weight:500;color:var(--dark);margin:0 0 6px}
+.ap-input{width:100%;border:1px solid var(--line);border-radius:11px;padding:11px 13px;font-size:14px;font-family:inherit;color:var(--dark);background:#fbfbfa;transition:.15s;}
+.ap-input:focus{outline:none;border-color:var(--green);background:#fff;box-shadow:0 0 0 3px var(--green-050)}
+.ap-input::placeholder{color:var(--ink-40)}
+.ap-perm{display:flex;gap:8px;margin:16px 0 2px}
+.ap-perm-chip{flex:1;display:flex;align-items:center;gap:8px;background:var(--green-050);border-radius:11px;padding:10px 11px;font-size:11.5px;font-weight:500;color:var(--green-700);}
+.ap-perm-chip svg{color:var(--green)}
+.ap-btn{width:100%;border:none;border-radius:13px;padding:14px;font-family:inherit;font-size:14.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:.15s;}
+.ap-btn-primary{background:var(--green);color:#fff}
+.ap-btn-primary:hover{background:var(--green-700)}
+.ap-btn-primary:disabled{background:#c7d4cc;cursor:not-allowed}
+.ap-btn-ghost{background:#fff;color:var(--dark);border:1px solid var(--line)}
+.ap-btn-ghost:hover{background:#fafafa}
+.ap-btn-rec{background:var(--red);color:#fff}
+.ap-btn-rec:hover{filter:brightness(.94)}
+.ap-footer{padding:16px 20px 22px;border-top:1px solid var(--line);background:#fff}
+.ap-progress-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.ap-progress-track{height:5px;background:var(--line);border-radius:99px;overflow:hidden;flex:1;margin-right:12px}
+.ap-progress-fill{height:100%;background:var(--green);border-radius:99px;transition:width .4s ease}
+.ap-progress-lbl{font-size:12px;font-weight:600;color:var(--ink-60);white-space:nowrap}
+.ap-viewfinder{position:relative;background:#141414;border-radius:18px;aspect-ratio:3/4;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;margin-bottom:16px;}
+.ap-vf-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:33% 33%;}
+.ap-vf-corner{position:absolute;width:22px;height:22px;border:2px solid rgba(255,255,255,.5)}
+.ap-vf-corner.tl{top:14px;left:14px;border-right:none;border-bottom:none;border-radius:6px 0 0 0}
+.ap-vf-corner.tr{top:14px;right:14px;border-left:none;border-bottom:none;border-radius:0 6px 0 0}
+.ap-vf-corner.bl{bottom:14px;left:14px;border-right:none;border-top:none;border-radius:0 0 0 6px}
+.ap-vf-corner.br{bottom:14px;right:14px;border-left:none;border-top:none;border-radius:0 0 6px 0}
+.ap-vf-icon{color:rgba(255,255,255,.32);z-index:1}
+.ap-vf-prompt{position:absolute;bottom:16px;left:16px;right:16px;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);border-radius:12px;padding:11px 13px;color:#fff;z-index:2;}
+.ap-vf-prompt .step{font-size:10.5px;font-weight:600;color:var(--gold);letter-spacing:.6px;text-transform:uppercase}
+.ap-vf-prompt .txt{font-size:14px;font-weight:500;margin-top:2px;line-height:1.3}
+.ap-rec-dot{position:absolute;top:14px;left:44px;display:flex;align-items:center;gap:6px;color:#fff;font-size:11px;font-weight:600;z-index:2}
+.ap-rec-dot i{width:9px;height:9px;border-radius:99px;background:var(--red);display:block;animation:ap-pulse 1s infinite}
+@keyframes ap-pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.ap-rec-bar{position:absolute;top:0;left:0;height:3px;background:var(--red);z-index:3;transition:width .1s linear}
+.ap-chaplist{display:flex;flex-direction:column;gap:7px;margin-top:4px}
+.ap-chap{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#fff}
+.ap-chap.active{border-color:var(--green);background:var(--green-050)}
+.ap-chap-ic{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ap-chap-ic.pending{background:#f1f1ef;color:var(--ink-40)}
+.ap-chap-ic.active{background:var(--green);color:#fff}
+.ap-chap-ic.done{background:var(--green-050);color:var(--green)}
+.ap-chap-t{font-size:13px;font-weight:500;flex:1}
+.ap-chap-s{font-size:11px;color:var(--ink-40)}
+.ap-proc{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center}
+.ap-spin{width:64px;height:64px;border-radius:99px;border:4px solid var(--green-050);border-top-color:var(--green);animation:ap-rot 1s linear infinite;margin-bottom:24px}
+@keyframes ap-rot{to{transform:rotate(360deg)}}
+.ap-proc-steps{width:100%;max-width:280px;margin-top:26px;display:flex;flex-direction:column;gap:12px;text-align:left}
+.ap-proc-step{display:flex;align-items:center;gap:11px;font-size:13.5px;color:var(--ink-40);transition:.3s}
+.ap-proc-step.active{color:var(--dark);font-weight:500}
+.ap-proc-step.active .ap-ps-ic{background:var(--green);color:#fff;border-color:var(--green)}
+.ap-proc-step.done{color:var(--dark)}
+.ap-proc-step.done .ap-ps-ic{background:var(--green-050);color:var(--green);border-color:var(--green-050)}
+.ap-ps-ic{width:24px;height:24px;border-radius:99px;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ap-ring-wrap{display:flex;flex-direction:column;align-items:center;padding:6px 0 10px}
+.ap-ring{position:relative;width:150px;height:150px}
+.ap-ring-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ap-ring-num b{font-family:'Space Grotesk';font-size:38px;font-weight:600;line-height:1;color:var(--dark)}
+.ap-ring-num span{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--ink-40);margin-top:4px}
+.ap-verdict{text-align:center;margin:6px 0 4px}
+.ap-verdict b{font-family:'Space Grotesk';font-size:17px;font-weight:600}
+.ap-check{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.ap-check:last-child{border-bottom:none}
+.ap-check-ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ap-check-ic.pass{background:var(--green-050);color:var(--green)}
+.ap-check-ic.amber{background:var(--gold-050);color:#a4830f}
+.ap-check-ic.fail{background:var(--red-050);color:var(--red)}
+.ap-check-body{flex:1}
+.ap-check-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:3px}
+.ap-check-t{font-size:13.5px;font-weight:600}
+.ap-badge{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:3px 8px;border-radius:99px}
+.ap-badge.pass{background:var(--green-050);color:var(--green)}
+.ap-badge.amber{background:var(--gold-050);color:#8a6d08}
+.ap-badge.fail{background:var(--red-050);color:var(--red)}
+.ap-check-note{font-size:12.5px;line-height:1.45;color:var(--ink-60);margin:0}
+.ap-report-head{background:var(--green);color:#fff;padding:20px;position:relative;overflow:hidden}
+.ap-report-head::after{content:"";position:absolute;bottom:-1px;left:0;right:0;height:8px;background:repeating-linear-gradient(90deg,var(--gold) 0 14px,transparent 14px 28px)}
+.ap-report-title{font-family:'Space Grotesk';font-size:18px;font-weight:600;margin:10px 0 2px}
+.ap-report-sub{font-size:11.5px;color:rgba(255,255,255,.8)}
+.ap-seal{position:absolute;top:16px;right:18px;width:58px;height:58px;border-radius:99px;background:var(--gold);color:var(--green-700);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+.ap-seal b{font-family:'Space Grotesk';font-size:19px;font-weight:700;line-height:1}
+.ap-seal span{font-size:7.5px;font-weight:700;letter-spacing:.5px}
+.ap-meta{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px;padding:18px 20px;border-bottom:1px solid var(--line)}
+.ap-meta-k{font-size:10.5px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--ink-40);margin:0 0 2px}
+.ap-meta-v{font-size:13px;font-weight:500;color:var(--dark);margin:0}
+.ap-rep-list{padding:6px 20px}
+.ap-rep-row{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}
+.ap-rep-row:last-child{border-bottom:none}
+.ap-rep-row .dot{width:9px;height:9px;border-radius:99px;flex-shrink:0}
+.ap-rep-row .name{flex:1;font-size:13px;font-weight:500}
+.ap-rep-row .res{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.ap-qr-block{display:flex;gap:14px;align-items:center;padding:16px 20px;background:#fafafa;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.ap-qr{width:74px;height:74px;flex-shrink:0;border-radius:8px;overflow:hidden;background:#fff;padding:5px;border:1px solid var(--line)}
+.ap-qr-txt p{margin:0;font-size:12px;line-height:1.45;color:var(--ink-60)}
+.ap-qr-txt b{color:var(--dark);font-size:12.5px}
+.ap-sign{padding:18px 20px}
+.ap-sign-line{border-bottom:1.5px solid var(--dark);height:34px;margin-bottom:5px}
+.ap-sign-lbl{font-size:11px;color:var(--ink-40)}
+.ap-declare{font-size:12px;line-height:1.5;color:var(--ink-60);margin:12px 0 0;display:flex;gap:8px}
+.ap-declare svg{color:var(--green);flex-shrink:0;margin-top:1px}
+.ap-legal{background:var(--dark);color:#cfcfcf;padding:14px 20px;font-size:11px;line-height:1.5}
+.ap-legal b{color:#fff}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+/* ---- inline icons (lucide paths) ---- */
+const mkIcon = (inner) => (props) => {
+  const { size = 24, style, className } = props || {};
+  return React.createElement('svg', {
+    width: size, height: size, viewBox: '0 0 24 24', fill: 'none',
+    stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round',
+    strokeLinejoin: 'round', className, style,
+    dangerouslySetInnerHTML: { __html: inner }
+  });
+};
+const Camera      = mkIcon('<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>');
+const MapPin      = mkIcon('<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>');
+const ShieldCheck = mkIcon('<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>');
+const CheckCircle2= mkIcon('<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>');
+const AlertTriangle=mkIcon('<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>');
+const XCircle     = mkIcon('<circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>');
+const Droplets    = mkIcon('<path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 4.8 7 3c-.29 1.8-1.14 3.13-2.29 4.06S3 11.09 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A11 11 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6 6 0 0 1-11.7 1.85"/>');
+const Package     = mkIcon('<path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="m7.5 4.27 9 5.15"/>');
+const Trash2      = mkIcon('<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/>');
+const FlaskConical= mkIcon('<path d="M14 2v6.3a1 1 0 0 0 .17.55L20 18a1 1 0 0 1-.83 1.5H4.83A1 1 0 0 1 4 18l5.83-9.15A1 1 0 0 0 10 8.3V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/>');
+const DoorOpen    = mkIcon('<path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.56v16.16a1 1 0 0 1-1.24.97L5 20V5.56a2 2 0 0 1 1.52-1.94l4-1A2 2 0 0 1 13 4.56Z"/>');
+const ArrowRight  = mkIcon('<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>');
+const Download    = mkIcon('<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>');
+const RotateCcw   = mkIcon('<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>');
+const Loader2     = mkIcon('<path d="M21 12a9 9 0 1 1-6.219-8.56"/>');
+const FileCheck   = mkIcon('<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m9 15 2 2 4-4"/>');
+const Circle      = mkIcon('<circle cx="12" cy="12" r="10"/>');
+const ScanLine    = mkIcon('<path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h10"/>');
+
+const CHAPTERS = [
+  { key:"entrance",  title:"Entrance & serving area", short:"Show your front",   icon:DoorOpen,     prompt:"Show your entrance and serving counter" },
+  { key:"storage",   title:"Food storage",           short:"Where food is kept", icon:Package,      prompt:"Show where you store your food stock" },
+  { key:"handwash",  title:"Handwashing station",    short:"Turn on the tap",    icon:Droplets,     prompt:"Show your basin — turn on the tap for us" },
+  { key:"chemicals", title:"Chemical storage",       short:"Cleaning products",  icon:FlaskConical, prompt:"Show where you keep cleaning products" },
+  { key:"waste",     title:"Waste area",             short:"Rubbish disposal",   icon:Trash2,       prompt:"Show your rubbish and waste area" },
+];
+const RESULTS = [
+  { key:"entrance",  title:"Entrance & serving area", status:"pass",  note:"Clean, well-lit trading space. Counter is tidy and food-safe." },
+  { key:"storage",   title:"Food storage",           status:"amber", note:"Some stock is sitting on the floor. Raise all food onto a shelf or pallet before your inspection." },
+  { key:"handwash",  title:"Handwashing station",    status:"pass",  note:"Basin with running water and soap confirmed in the video." },
+  { key:"chemicals", title:"Chemical storage",       status:"fail",  note:"Cleaning products are stored next to food. Move all chemicals to a separate area away from stock immediately." },
+  { key:"waste",     title:"Waste area",             status:"pass",  note:"Covered bin, waste kept clear of food. Well managed." },
+];
+const PROC_STEPS = ["Uploading your video","Checking location & time","Analysing each area","Scoring against R638"];
+const STATUS_META = {
+  pass:  { badge:"Pass",            Icon:CheckCircle2, color:"var(--green)" },
+  amber: { badge:"Needs attention", Icon:AlertTriangle,color:"#a4830f" },
+  fail:  { badge:"Action needed",   Icon:XCircle,      color:"var(--red)" },
+};
+
+function FauxQR(){
+  const cells=[]; const seed=7;
+  for(let r=0;r<11;r++){for(let c=0;c<11;c++){
+    const corner=(r<3&&c<3)||(r<3&&c>7)||(r>7&&c<3);
+    const on=corner||((r*7+c*seed+(r^c))%3===0);
+    if(on) cells.push(React.createElement('rect',{key:r+'-'+c,x:c*9,y:r*9,width:9,height:9}));
+  }}
+  return React.createElement('svg',{viewBox:'0 0 99 99',width:'100%',height:'100%',fill:'#1a1a1a'},cells);
+}
+
+function App(){
+  const [screen,setScreen]=useState("welcome");
+  const [shop,setShop]=useState({name:"",owner:"",phone:"",address:""});
+  const [chapter,setChapter]=useState(0);
+  const [done,setDone]=useState([false,false,false,false,false]);
+  const [recording,setRecording]=useState(false);
+  const [recPct,setRecPct]=useState(0);
+  const [procStep,setProcStep]=useState(0);
+  const recTimer=useRef(null);
+
+  const formOK = shop.name.trim()&&shop.owner.trim()&&shop.phone.trim()&&shop.address.trim();
+  const ref = "ASP-"+(shop.phone.replace(/\D/g,"").slice(-4)||"0000")+"-7X29";
+  const today = new Date().toLocaleDateString("en-ZA",{day:"2-digit",month:"short",year:"numeric"});
+  const readiness = Math.round((RESULTS.filter(r=>r.status==="pass").length + RESULTS.filter(r=>r.status==="amber").length*0.5)/RESULTS.length*100);
+  const allRecorded = done.every(Boolean);
+
+  function startRec(){
+    if(recording) return;
+    setRecording(true); setRecPct(0);
+    let p=0;
+    recTimer.current=setInterval(()=>{
+      p+=4; setRecPct(p);
+      if(p>=100){ clearInterval(recTimer.current); setRecording(false);
+        setDone(d=>{const n=[...d];n[chapter]=true;return n;}); }
+    },90);
+  }
+  useEffect(()=>()=>clearInterval(recTimer.current),[]);
+
+  useEffect(()=>{
+    if(screen!=="processing") return;
+    setProcStep(0);
+    const t1=setTimeout(()=>setProcStep(1),900);
+    const t2=setTimeout(()=>setProcStep(2),1900);
+    const t3=setTimeout(()=>setProcStep(3),3000);
+    const t4=setTimeout(()=>setScreen("results"),4100);
+    return ()=>[t1,t2,t3,t4].forEach(clearTimeout);
+  },[screen]);
+
+  function reset(){
+    setScreen("welcome"); setChapter(0); setDone([false,false,false,false,false]);
+    setShop({name:"",owner:"",phone:"",address:""}); setRecPct(0);
+  }
+
+  return (
+    <div className="ap-root">
+      <div className="ap-phone">
+        <div className="ap-statusbar">
+          <span>9:41</span>
+          <span style={{display:"flex",gap:5,alignItems:"center",fontSize:11}}>
+            <span>MTN</span><span>·</span><span>4G</span><span>·</span><span>82%</span>
+          </span>
+        </div>
+        <div className="ap-brandbar">
+          <div className="ap-logo">A</div>
+          <div className="ap-wordmark">Afre<span>PAY</span></div>
+          <div style={{marginLeft:"auto",fontSize:11,opacity:.85,fontWeight:500}}>Compliance</div>
+        </div>
+
+        {screen==="welcome" && (
+          <React.Fragment>
+            <div className="ap-scroll">
+              <div className="ap-pad">
+                <p className="ap-eyebrow">Spaza health &amp; safety</p>
+                <h1 className="ap-h1">Get inspection-ready in&nbsp;5&nbsp;minutes</h1>
+                <p className="ap-sub">Record a quick guided walk-through of your shop. We check it against the health &amp; safety rules and show you exactly what to fix before the inspector arrives.</p>
+                <div className="ap-note">
+                  <ShieldCheck size={17}/>
+                  <p><b>This is a self-assessment to help you prepare.</b> It is not a Certificate of Acceptability and does not replace a visit from an Environmental Health Practitioner.</p>
+                </div>
+                <div className="ap-card">
+                  <div className="ap-field"><label className="ap-label">Shop name</label>
+                    <input className="ap-input" placeholder="e.g. Thabo's Corner Store" value={shop.name} onChange={e=>setShop({...shop,name:e.target.value})}/></div>
+                  <div className="ap-field"><label className="ap-label">Owner's full name</label>
+                    <input className="ap-input" placeholder="e.g. Thabo Nkosi" value={shop.owner} onChange={e=>setShop({...shop,owner:e.target.value})}/></div>
+                  <div className="ap-field"><label className="ap-label">Phone number</label>
+                    <input className="ap-input" placeholder="e.g. 082 123 4567" inputMode="tel" value={shop.phone} onChange={e=>setShop({...shop,phone:e.target.value})}/></div>
+                  <div className="ap-field"><label className="ap-label">Shop address</label>
+                    <input className="ap-input" placeholder="Street, township, city" value={shop.address} onChange={e=>setShop({...shop,address:e.target.value})}/></div>
+                </div>
+                <div className="ap-perm">
+                  <div className="ap-perm-chip"><Camera size={15}/> Camera needed</div>
+                  <div className="ap-perm-chip"><MapPin size={15}/> Location needed</div>
+                </div>
+              </div>
+            </div>
+            <div className="ap-footer">
+              <button className="ap-btn ap-btn-primary" disabled={!formOK} onClick={()=>setScreen("capture")}>
+                Start assessment <ArrowRight size={17}/>
+              </button>
+            </div>
+          </React.Fragment>
+        )}
+
+        {screen==="capture" && (
+          <React.Fragment>
+            <div className="ap-scroll">
+              <div className="ap-pad">
+                <div className="ap-progress-row">
+                  <div className="ap-progress-track"><div className="ap-progress-fill" style={{width:((done.filter(Boolean).length/5)*100)+"%"}}/></div>
+                  <span className="ap-progress-lbl">Step {chapter+1} of 5</span>
+                </div>
+                <div className="ap-viewfinder">
+                  <div className="ap-vf-grid"/>
+                  <span className="ap-vf-corner tl"/><span className="ap-vf-corner tr"/>
+                  <span className="ap-vf-corner bl"/><span className="ap-vf-corner br"/>
+                  {recording && <div className="ap-rec-bar" style={{width:recPct+"%"}}/>}
+                  {recording && <div className="ap-rec-dot"><i/>REC</div>}
+                  {React.createElement(CHAPTERS[chapter].icon,{size:54,className:"ap-vf-icon"})}
+                  <div className="ap-vf-prompt">
+                    <div className="step">Step {chapter+1} · {CHAPTERS[chapter].short}</div>
+                    <div className="txt">{CHAPTERS[chapter].prompt}</div>
+                  </div>
+                </div>
+                <div className="ap-chaplist">
+                  {CHAPTERS.map((c,i)=>{
+                    const state = done[i]?"done":i===chapter?"active":"pending";
+                    return (
+                      <div key={c.key} className={"ap-chap "+state}>
+                        <div className={"ap-chap-ic "+state}>
+                          {done[i]?<CheckCircle2 size={16}/>:React.createElement(c.icon,{size:15})}
+                        </div>
+                        <div className="ap-chap-t">{c.title}</div>
+                        {done[i]
+                          ? <span className="ap-chap-s" style={{color:"var(--green)",fontWeight:600}}>Recorded</span>
+                          : i===chapter
+                            ? <span className="ap-chap-s" style={{color:"var(--green)"}}>Now</span>
+                            : <Circle size={7} style={{color:"var(--ink-40)"}}/>}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+            <div className="ap-footer">
+              {!done[chapter] ? (
+                <button className="ap-btn ap-btn-rec" onClick={startRec} disabled={recording}>
+                  {recording
+                    ? <React.Fragment><Loader2 size={17} style={{color:"#fff",animation:"ap-rot 1s linear infinite"}}/> Recording… {recPct}%</React.Fragment>
+                    : <React.Fragment><span style={{width:11,height:11,borderRadius:99,background:"#fff",display:"block"}}/> Record this area</React.Fragment>}
+                </button>
+              ) : chapter<4 ? (
+                <div style={{display:"flex",gap:10}}>
+                  <button className="ap-btn ap-btn-ghost" style={{flex:"0 0 46px",padding:0}}
+                    onClick={()=>setDone(d=>{const n=[...d];n[chapter]=false;return n;})} title="Re-record"><RotateCcw size={16}/></button>
+                  <button className="ap-btn ap-btn-primary" onClick={()=>setChapter(chapter+1)}>Next area <ArrowRight size={17}/></button>
+                </div>
+              ) : (
+                <button className="ap-btn ap-btn-primary" disabled={!allRecorded} onClick={()=>setScreen("processing")}>
+                  Analyse my shop <ScanLine size={17}/>
+                </button>
+              )}
+            </div>
+          </React.Fragment>
+        )}
+
+        {screen==="processing" && (
+          <div className="ap-proc">
+            <div className="ap-spin"/>
+            <h1 className="ap-h1" style={{fontSize:21}}>Checking your shop…</h1>
+            <p className="ap-sub">This takes about a minute. Please keep the app open.</p>
+            <div className="ap-proc-steps">
+              {PROC_STEPS.map((s,i)=>{
+                const state=i<procStep?"done":i===procStep?"active":"";
+                return (
+                  <div key={s} className={"ap-proc-step "+state}>
+                    <div className="ap-ps-ic">
+                      {i<procStep?<CheckCircle2 size={14}/>:i===procStep?<Loader2 size={13} style={{animation:"ap-rot 1s linear infinite"}}/>:<Circle size={9}/>}
+                    </div>{s}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {screen==="results" && (
+          <React.Fragment>
+            <div className="ap-scroll">
+              <div className="ap-pad">
+                <p className="ap-eyebrow" style={{textAlign:"center"}}>Your readiness score</p>
+                <div className="ap-ring-wrap">
+                  <div className="ap-ring">
+                    <svg width="150" height="150" viewBox="0 0 150 150">
+                      <circle cx="75" cy="75" r="64" fill="none" stroke="var(--line)" strokeWidth="13"/>
+                      <circle cx="75" cy="75" r="64" fill="none" stroke="var(--green)" strokeWidth="13" strokeLinecap="round"
+                        strokeDasharray={2*Math.PI*64} strokeDashoffset={2*Math.PI*64*(1-readiness/100)}
+                        transform="rotate(-90 75 75)" style={{transition:"stroke-dashoffset 1s ease"}}/>
+                    </svg>
+                    <div className="ap-ring-num"><b>{readiness}%</b><span>Ready</span></div>
+                  </div>
+                  <div className="ap-verdict">
+                    <b>Almost there — 2 things to fix</b>
+                    <p className="ap-sub" style={{marginTop:4}}>Sort the red and amber items below, then you're ready for the inspector.</p>
+                  </div>
+                </div>
+                <div className="ap-card" style={{padding:"4px 16px"}}>
+                  {RESULTS.map(r=>{
+                    const m=STATUS_META[r.status];
+                    return (
+                      <div className="ap-check" key={r.key}>
+                        <div className={"ap-check-ic "+r.status}><m.Icon size={18}/></div>
+                        <div className="ap-check-body">
+                          <div className="ap-check-top">
+                            <span className="ap-check-t">{r.title}</span>
+                            <span className={"ap-badge "+r.status}>{m.badge}</span>
+                          </div>
+                          <p className="ap-check-note">{r.note}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+            <div className="ap-footer">
+              <button className="ap-btn ap-btn-primary" onClick={()=>setScreen("report")}><FileCheck size={17}/> Generate my report</button>
+            </div>
+          </React.Fragment>
+        )}
+
+        {screen==="report" && (
+          <React.Fragment>
+            <div className="ap-scroll">
+              <div className="ap-report-head">
+                <div className="ap-seal"><b>{readiness}</b><span>READY</span></div>
+                <div style={{display:"flex",alignItems:"center",gap:7}}>
+                  <div className="ap-logo" style={{width:22,height:22,fontSize:13}}>A</div>
+                  <span style={{fontFamily:"Space Grotesk",fontWeight:600,fontSize:13}}>AfrePAY</span>
+                </div>
+                <div className="ap-report-title">Compliance Readiness Report</div>
+                <div className="ap-report-sub">Spaza food health &amp; safety · Self-assessment</div>
+              </div>
+              <div className="ap-meta">
+                <div><p className="ap-meta-k">Shop</p><p className="ap-meta-v">{shop.name||"—"}</p></div>
+                <div><p className="ap-meta-k">Owner</p><p className="ap-meta-v">{shop.owner||"—"}</p></div>
+                <div><p className="ap-meta-k">Address</p><p className="ap-meta-v">{shop.address||"—"}</p></div>
+                <div><p className="ap-meta-k">Date</p><p className="ap-meta-v">{today}</p></div>
+                <div><p className="ap-meta-k">Reference</p><p className="ap-meta-v">{ref}</p></div>
+                <div><p className="ap-meta-k">Readiness</p><p className="ap-meta-v" style={{color:"var(--green)"}}>{readiness}% ready</p></div>
+              </div>
+              <div className="ap-rep-list">
+                {RESULTS.map(r=>{
+                  const m=STATUS_META[r.status];
+                  return (
+                    <div className="ap-rep-row" key={r.key}>
+                      <span className="dot" style={{background:m.color}}/>
+                      <span className="name">{r.title}</span>
+                      <span className="res" style={{color:m.color}}>{m.badge}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="ap-qr-block">
+                <div className="ap-qr"><FauxQR/></div>
+                <div className="ap-qr-txt">
+                  <p><b>Verified video on record.</b></p>
+                  <p style={{marginTop:3}}>Scan to view the time- and location-stamped walk-through behind this report. Ref {ref}.</p>
+                </div>
+              </div>
+              <div className="ap-sign">
+                <div className="ap-sign-line"/>
+                <div className="ap-sign-lbl">Owner's signature</div>
+                <p className="ap-declare"><CheckCircle2 size={15}/> I, {shop.owner||"the owner"}, declare that this information is true and reflects my shop on {today}.</p>
+              </div>
+              <div className="ap-legal">
+                <b>Not a Certificate of Acceptability.</b> This report is a self-assessment prepared by the owner to show readiness for inspection. It does not certify legal compliance and does not replace inspection by an Environmental Health Practitioner under Regulation R638.
+              </div>
+            </div>
+            <div className="ap-footer">
+              <div style={{display:"flex",gap:10}}>
+                <button className="ap-btn ap-btn-ghost" style={{flex:"0 0 46px",padding:0}} onClick={reset} title="Start over"><RotateCcw size={16}/></button>
+                <button className="ap-btn ap-btn-primary" onClick={()=>alert("In the real app this saves a PDF. This is a demo.")}><Download size={17}/> Download PDF</button>
+              </div>
+            </div>
+          </React.Fragment>
+        )}
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
